@@ -25,17 +25,6 @@ class Device extends Model
         'name',
         'picture',
         'released_at',
-        'body',
-        'os',
-        'storage',
-        'display_size',
-        'display_resolution',
-        'camera_pixels',
-        'video_pixels',
-        'ram',
-        'chipset',
-        'battery_size',
-        'battery_type',
         'specifications',
     ];
 

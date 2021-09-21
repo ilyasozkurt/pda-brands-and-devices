@@ -14,7 +14,7 @@ class ScrapeCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'scrape:devices';
+    protected $signature = 'scrape:pdas';
 
     /**
      * The console command description.
@@ -41,10 +41,10 @@ class ScrapeCommand extends Command
     public function handle()
     {
 
-        $lastIndex = (int)file_get_contents('last_index.txt');
+        $lastIndex = (int)file_get_contents('last_index.txt') - 1;
         $lastHash = (string)file_get_contents('last_hash.txt');
 
-        $sitemapSource = Http::get('https://www.gsmarena.com/sitemap-phones.xml');
+        $sitemapSource = Http::get('https://phonedb.net/sitemap/');
 
         if ($lastHash !== md5($sitemapSource->body())) {
             $lastIndex = 0;
@@ -67,27 +67,44 @@ class ScrapeCommand extends Command
                 continue;
             }
 
-            if (!strpos($url->loc, 'related.php') && !strpos($url->loc, '-pictures-')) {
+            if (strpos($url->loc, 'm=device&id=')) {
 
                 $device = Device::where('url_hash', md5($url->loc))
                     ->get();
 
                 if (!$device->count()) {
 
-                    $httpSource = Http::get($url->loc);
+                    try {
 
-                    $parser = str_get_html($httpSource->body());
+                        $httpSource = Http::get($url->loc . '&d=detailed_specs');
 
-                    $name = $parser->find('[data-spec="modelname"]')[0]->plaintext ?? null;
+                        $parser = str_get_html($httpSource->body());
 
-                    if ($name) {
+                        $data = [];
 
-                        $brandName = (explode(' ', $name))[0] ?? null;
+                        $data['Picture'] = @$parser->find('.sidebar img', 0)->src;
+                        $data['Picture'] = $data['Picture'] ? 'https://phonedb.net/' . $data['Picture'] : '';
 
-                        if ($brandName) {
+                        foreach ($parser->find('.canvas table tr') as $row) {
+
+                            $columns = $row->find('td');
+
+                            if (count($columns) === 2) {
+
+                                $label = trim(html_entity_decode($columns[0]->plaintext));
+                                $value = trim(html_entity_decode($columns[1]->plaintext));
+                                $value = str_replace(' , ', ', ', $value);
+
+                                $data[$label] = $value;
+
+                            }
+
+                        }
+
+                        if (count($data)) {
 
                             $brand = Brand::firstOrCreate([
-                                'name' => $brandName
+                                'name' => $data['Brand']
                             ]);
 
                             $specificationsDom = $parser->find('#specs-list table tr');
@@ -107,36 +124,19 @@ class ScrapeCommand extends Command
                             ], [
                                 'url_hash' => md5($url->loc),
                                 'brand_id' => $brand->id,
-                                'name' => $name,
-                                'picture' => $parser->find('.specs-photo-main img')[0]->src ?? null,
-
-                                'released_at' => $parser->find('[data-spec="released-hl"]')[0]->plaintext ?? null,
-                                'body' => $parser->find('[data-spec="body-hl"]')[0]->plaintext ?? null,
-                                'os' => $parser->find('[data-spec="os-hl"]')[0]->plaintext ?? null,
-                                'storage' => $parser->find('[data-spec="storage-hl"]')[0]->plaintext ?? null,
-
-                                'display_size' => $parser->find('[data-spec="displaysize-hl"]')[0]->plaintext ?? null,
-                                'display_resolution' => $parser->find('[data-spec="displayres-hl"]')[0]->plaintext ?? null,
-
-                                'camera_pixels' => $parser->find('.accent.accent-camera')[0]->plaintext ?? null,
-                                'video_pixels' => $parser->find('[data-spec="videopixels-hl"]')[0]->plaintext ?? null,
-
-                                'ram' => $parser->find('.accent.accent-expansion')[0]->plaintext ?? null,
-                                'chipset' => $parser->find('[data-spec="chipset-hl"]')[0]->plaintext ?? null,
-
-                                'battery_size' => $parser->find('.accent.accent-battery')[0]->plaintext ?? null,
-                                'battery_type' => $parser->find('[data-spec="battype-hl"]')[0]->plaintext ?? null,
-
-                                'specifications' => $specifications,
+                                'name' => $data['Model'],
+                                'picture' => $data['Picture'],
+                                'released_at' => $data['Released'],
+                                'specifications' => $data,
                             ]);
 
                             $device->save();
 
                         }
 
-                    }
+                    }catch (\Exception $exception){
 
-                    sleep(2);
+                    }
 
                 }
 

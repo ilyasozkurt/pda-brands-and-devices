@@ -1,9 +1,17 @@
 # PDA Manufacturers And Models Database
 Two database tables whiches includes PDA manufacturers and their devices.
 
-**brands.sql** (491 manufacturer) -> Includes brands
+###Brands 
+_**brands.sql** (491 manufacturer) -> Includes brands_
+* Name
 
-**devices.sql** (19960 devices) -> Devices related with brand_id
+###Devices
+_**devices.sql** (19960 devices) -> Devices related with brand_id_
+
+* name
+* picture
+* released_at
+* specifications (json, 95 specification)
 
 Data mined at **21/09/2021** from phonedb.net
 

@@ -1,10 +1,10 @@
-# Mobile Phone Manufacturers And Models Database
-Two database tables whiches includes mobilephone manufacturers and their models.
+# PDA Manufacturers And Models Database
+Two database tables whiches includes PDA manufacturers and their devices.
 
-**brands.sql** (116 manufacturer) -> Includes brands
+**brands.sql** (491 manufacturer) -> Includes brands
 
-**devices.sql** (10633 model) -> Models related with brand_id
+**devices.sql** (19960 devices) -> Devices related with brand_id
 
-Data mined at **10/09/2021** from gsmarena.com
+Data mined at **21/09/2021** from phonedb.net
 
 Sponsored by [ilyasozkurt.com](https://ilyasozkurt.com "PHP, Laravel Developer")

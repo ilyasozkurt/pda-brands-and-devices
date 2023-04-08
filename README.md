@@ -16,3 +16,5 @@ _**devices.sql** (19960 devices) -> Devices related with brand_id_
 Data mined at **21/09/2021** from phonedb.net
 
 Sponsored by [ilyasozkurt.com](https://ilyasozkurt.com "PHP, Laravel Developer")
+
+Sponsored by [freestockphotos.site](https://freestockphotos.site "Free Stock Photos.site")

@@ -17,4 +17,4 @@ Data mined at **21/09/2021** from phonedb.net
 
 Sponsored by [ilyasozkurt.com](https://ilyasozkurt.com "PHP, Laravel Developer")
 
-Sponsored by [freestockphotos.site](https://freestockphotos.site "Free Stock Photos.site")
+Sponsored by [hometrust.app](https://hometrust.app "Property Reviews Platform")

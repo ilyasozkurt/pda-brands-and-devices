@@ -15,6 +15,4 @@ _**devices.sql** (19960 devices) -> Devices related with brand_id_
 
 Data mined at **21/09/2021** from phonedb.net
 
-Sponsored by [ilyasozkurt.com](https://ilyasozkurt.com "PHP, Laravel Developer")
-
-Sponsored by [hometrust.app](https://hometrust.app "Property Reviews Platform")
+Sponsored by [trustlocale.com](https://trustlocale.com "Neighborhood Reviews, Insights")
